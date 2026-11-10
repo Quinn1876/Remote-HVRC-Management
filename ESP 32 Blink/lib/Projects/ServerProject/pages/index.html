@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ESP32 Web Server</title>
+    <style>
+        .container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            border: 1px solid blue;
+            flex-grow: 0;
+        }
+        .body {
+            display: flex;
+            flex-grow: 1;
+            border: 1px solid red;
+            display: flex;
+        }
+        table {
+            border: 4px solid darkgrey;
+        }
+        td {
+            border: 1px solid grey;
+            padding: 4px;
+            margin-right: 0px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>HVRC Control system</h1>
+        </div>
+        <div class="body">
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Current Time Remaining</td>
+                        <td id="current-time"></td>
+                        <td><button id="add-five">+5 min</button></td>
+                        <td><button id="add-ten">+10 min</button></td>
+                        <td><button id="add-twenty">+20 min</button></td>
+                        <td><button id="add-thirty">+30 min</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        var currentTimeField = document.getElementById("current-time");
+        var addFiveButton = document.getElementById("add-five");
+        var addTenButton = document.getElementById("add-ten");
+        var addTwentyButton = document.getElementById("add-twenty");
+        var addThirtyButton = document.getElementById("add-thirty");
+        currentTimeField.innerText = "0 minutes";
+
+        function addTime(minutes) {
+            return function() {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', '/addTime?value=' + minutes, true);
+                xhr.onload = function() {
+                    currentTimeField.innerText = xhr.response['minutes'] + ' minutes'
+                }
+                xhr.send();
+                console.log(minutes)
+            }
+        }
+
+        addFiveButton.onclick = addTime(5);
+        addTenButton.onclick = addTime(10);
+        addTwentyButton.onclick = addTime(20);
+        addThirtyButton.onclick = addTime(30);
+    </script>
+</body>
+</html>
